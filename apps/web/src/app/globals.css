@@ -46,6 +46,8 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-carity: var(--font-carity);
   --font-plus-jakarta-sans: var(--font-plus-jakarta-sans);
+  --landing-borders: var(--landing-borders);
+  --border-gradient: var(--border-gradient);
 }
 
 :root {
@@ -81,6 +83,8 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --landing-borders: hsl(0 0.0% 12.2%);
+  --border-gradient: linear-gradient(to right, transparent, white, transparent);
 }
 
 .dark {
@@ -115,6 +119,8 @@
   --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --landing-borders: hsl(0, 0%, 41%);
+  --border-gradient: linear-gradient(to right, transparent, white, transparent);
 }
 
 @layer base {
