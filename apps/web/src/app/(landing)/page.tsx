@@ -1,5 +1,6 @@
 "use client"
 
+import { BigTagline } from '@/components/landing-page/hero-title'
 import FlowingLine from '@/components/svg-animations/flowing-line'
 
 const Page = () => {
@@ -11,7 +12,7 @@ const Page = () => {
       </div>
 
       <div className="flex-1 w-full relative ">
-        
+        <BigTagline />
       </div>
 
       <div className="pb-28 w-full shrink-0">
