@@ -1,7 +1,11 @@
 import React from "react";
 import { motion } from "motion/react";
 
-const FlowingLine = (props: React.SVGProps<SVGSVGElement>) => {
+interface FlowingLineProps extends React.SVGProps<SVGSVGElement> {
+  enableAnimation?: boolean;
+}
+
+const FlowingLine = ({ enableAnimation = true, ...props }: FlowingLineProps) => {
   const uid = React.useId().replace(/[:]/g, "");
   const gradId = `border-gradient-${uid}`;
 
@@ -41,10 +45,17 @@ const FlowingLine = (props: React.SVGProps<SVGSVGElement>) => {
             x1:"-10%",
             x2:"0%"
           }}
-          animate={{
-            x1:"100%",
-            x2:"110%"
-          }}
+          animate={
+            enableAnimation
+              ? {
+                  x1: "100%",
+                  x2: "110%",
+                }
+              : {
+                  x1: "-10%",
+                  x2: "0%",
+                }
+          }
           transition={{
             duration: 5,
             repeat:Infinity,

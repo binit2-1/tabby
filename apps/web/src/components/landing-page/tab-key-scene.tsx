@@ -1,51 +1,47 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Environment, Float, ContactShadows } from "@react-three/drei";
 import { TabKeyModel } from "./Tab-key";
 
-function ResponsiveCamera() {
-  const { camera } = useThree();
+// Responsive model that scales based on canvas size using R3F's reactive state
+function ResponsiveTabKey() {
+  // useThree is reactive — re-renders automatically on resize
+  // size.width is in pixels, matching Tailwind breakpoints
+  const { size } = useThree();
+  
+  // Tailwind breakpoints: sm=640, md=768, lg=1024, xl=1280
+  let modelScale = 1;
+  if (size.width < 640) {
+    modelScale = 0.5;       // Mobile (< sm)
+  } else if (size.width < 768) {
+    modelScale = 1.25;       // Small tablets (sm to md)
+  } else if (size.width < 1024) {
+    modelScale = 1.5;      // Tablets (md to lg)
+  } else {
+    modelScale = 2;         // Desktop (lg+)
+  }
 
-  useEffect(() => {
-    const updateZoom = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        camera.zoom = 80;  // Mobile
-      } else if (width < 768) {
-        camera.zoom = 110; // Small tablets
-      } else if (width < 1024) {
-        camera.zoom = 120; // Tablet
-      } else {
-        camera.zoom = 150; // Desktop
-      }
-      camera.updateProjectionMatrix();
-    };
-
-    updateZoom();
-    window.addEventListener("resize", updateZoom);
-    return () => window.removeEventListener("resize", updateZoom);
-  }, [camera]);
-
-  return null;
+  return (
+    <Float speed={5} rotationIntensity={0.2} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
+      <TabKeyModel 
+        rotation={[-Math.PI / 600, Math.PI / 4, 0]} 
+        scale={[modelScale, modelScale, modelScale]} 
+      />
+    </Float>
+  );
 }
 
-export function TabKeyScene() {
+export function TabKeyScene(props: { className?: string }) {
   return (
-    <div className="absolute flex justify-center font-plus-jakarta-sans w-140 h-30 sm:h-40 md:h-42 lg:h-52 lg:w-170 font-extrabold italic">
-      <span className="ml-17 sm:ml-0 md:-ml-20 lg:-ml-30">JUST</span>
+    <div className={props.className}>
       <Canvas 
         shadows
         orthographic
-        camera={{ position: [5, 20, 5], zoom: 150 }}
+        camera={{ position: [5, 20, 5], zoom: 100 }}
         dpr={[1, 2]}
-        className="w-full h-full"
       >
-        {/* Handles dynamic zoom on resize */}
-        <ResponsiveCamera />
-
-        {/* LIGHTING: Essential for the orange to look bright */}
+        {/* LIGHTING */}
         <ambientLight intensity={0.1} />
         <directionalLight 
           position={[-20, -60, -5]} 
@@ -54,16 +50,13 @@ export function TabKeyScene() {
           shadow-bias={1}
         />
         
-        {/* ANIMATION: Makes the key float gently */}
-        <Float speed={5} rotationIntensity={0.2} floatIntensity={0.2} floatingRange={[-0.1, 0.1]}>
-           {/* Blender Model */}
-           <TabKeyModel rotation={[-Math.PI / 600, Math.PI / 4,  0]} />
-        </Float>
+        {/* RESPONSIVE MODEL - scales automatically with viewport */}
+        <ResponsiveTabKey />
 
-        {/* REALISM: Soft shadow underneath */}
+        {/* SHADOW */}
         <ContactShadows position={[0, -1.2, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
         
-        {/* REFLECTIONS: Adds subtle shininess to the plastic */}
+        {/* REFLECTIONS */}
         <Environment preset="city" />
       </Canvas>
     </div>
