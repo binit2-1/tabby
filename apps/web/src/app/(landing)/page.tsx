@@ -11,7 +11,7 @@ const Page = () => {
         <FlowingLine className="w-full" />
       </div>
 
-      <div className="flex-1 w-full relative ">
+      <div className="flex flex-1 w-full h-full items-center justify-center mb-56">
         <BigTagline />
       </div>
 
