@@ -2,6 +2,7 @@ import { RootProvider } from 'fumadocs-ui/provider/next';
 import localFont from "next/font/local";
 import './globals.css';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import  AnimatedFavicon  from '@/components/animated-favicon';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -27,10 +28,16 @@ const carity = localFont({
   display: "swap",
 });
 
+export const metadata = {
+  title: 'Tabby',
+  description: 'Tabby is a tool which enables you to use code snippets offline, without any internet connection. Perfect for coding on the go!',
+};
+
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${inter.className} ${carity.variable} ${plusJakartaSans.variable}`} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
+        <AnimatedFavicon />
         <RootProvider>{children}</RootProvider>
       </body>
     </html>
