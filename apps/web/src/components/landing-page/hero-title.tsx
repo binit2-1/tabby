@@ -3,7 +3,7 @@ import { TabKeyScene } from "./tab-key-scene";
 
 const HeroTitle = () => {
   return (
-    <div className="relative w-full h-full flex justify-center items-center text-center text-7xl sm:text-9xl md:text-[10rem] lg:text-[12rem] font-extrabold italic overflow-hidden">
+    <div className="relative w-full h-full flex justify-center items-center mb-60 text-center text-7xl sm:text-9xl md:text-[10rem] lg:text-[12rem] font-extrabold italic overflow-hidden">
       <h1 className="w-full">
         <span className="block">
           <span className="font-plus-jakarta-sans">NO</span>{" "}
