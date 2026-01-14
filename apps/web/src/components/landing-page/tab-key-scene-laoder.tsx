@@ -4,7 +4,7 @@ import { useProgress } from "@react-three/drei"
 import { useEffect, useRef } from "react"
 
 export function TabKeySceneLoader({ onLoaded, onProgress }: { onLoaded?: () => void; onProgress?: (progress: number) => void }) {
-    const { active, progress } = useProgress()
+    const { active, progress, loaded, total } = useProgress()
     const hasCalledRef = useRef(false)
     
     useEffect(() => {
@@ -13,12 +13,19 @@ export function TabKeySceneLoader({ onLoaded, onProgress }: { onLoaded?: () => v
             onProgress(progress)
         }
         
-        // Call onLoaded when loading completes
-        if (!active && !hasCalledRef.current && onLoaded) {
+        // Call onLoaded only when:
+        // 1. Loading is no longer active (!active)
+        // 2. Progress is 100%
+        // 3. All items are loaded (loaded === total)
+        // 4. We haven't called it yet
+        if (!active && progress === 100 && loaded === total && !hasCalledRef.current && onLoaded) {
             hasCalledRef.current = true
-            onLoaded()
+            // Add small delay to ensure rendering completes
+            setTimeout(() => {
+                onLoaded()
+            }, 500)
         }
-    }, [active, progress, onLoaded, onProgress])
+    }, [active, progress, loaded, total, onLoaded, onProgress])
     
     // Don't render anything - just track loading state
     return null
