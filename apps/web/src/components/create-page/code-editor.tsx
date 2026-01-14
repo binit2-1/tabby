@@ -29,6 +29,8 @@ const CodeEditor = () => {
         return java();
       case "rust":
         return rust();
+      case "c":
+        return cpp();
       default:
         return []; 
     }

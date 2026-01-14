@@ -1,5 +1,6 @@
 "use client"
 import CodeEditor from '@/components/create-page/code-editor'
+import { RightSideBar } from '@/components/create-page/ui-blocks/rigth-sidebar'
 
 
 const Page = () => {
@@ -11,6 +12,8 @@ const Page = () => {
                 <CodeEditor />
             </div>
         </div>
+        {/* Right sidebar between inner and outer right borders */}
+        <div className='absolute right-81 top-30 bottom-0'><RightSideBar /></div>
       </div>
     </div>
   )
