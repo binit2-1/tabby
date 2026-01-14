@@ -36,7 +36,7 @@ export const metadata = {
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${inter.className} ${carity.variable} ${plusJakartaSans.variable}`} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-screen" suppressHydrationWarning>
         <AnimatedFavicon />
         <RootProvider>{children}</RootProvider>
       </body>
