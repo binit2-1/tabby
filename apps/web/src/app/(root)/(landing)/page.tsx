@@ -20,7 +20,7 @@ const page = () => {
     <>
       {/* Fullscreen loader - covers entire viewport */}
       {isLoading && (
-        <div className='fixed inset-0 z-[200] bg-background'>
+        <div className='fixed inset-0 z-200 bg-background'>
           <Loader progress={loadingProgress} className='w-full h-full' />
         </div>
       )}
