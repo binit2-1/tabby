@@ -18,9 +18,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Value } from "@radix-ui/react-select";
 
-const frameworks = [
+interface Framework {
+  value: string;
+  label: string;
+}
+
+const frameworks: Framework[] = [
   { value: "javascript", label: "JavaScript" },
   { value: "typescript", label: "TypeScript" },
   { value: "python", label: "Python" },
@@ -30,9 +34,16 @@ const frameworks = [
   { value: "c", label: "C" },
 ];
 
-export function RightSideBar() {
+export type FrameworkValue = (typeof frameworks)[number]["value"];
+
+interface RightSideBarProps {
+  language?: FrameworkValue;
+  setLanguage?: React.Dispatch<React.SetStateAction<FrameworkValue | "">>;
+}
+
+export function RightSideBar({ language, setLanguage }: RightSideBarProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState<FrameworkValue | "">(language ?? "");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -60,7 +71,10 @@ export function RightSideBar() {
                   key={framework.value}
                   value={framework.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    const newVal = currentValue === value ? "" : (currentValue as FrameworkValue);
+                    setValue(newVal);
+                    // notify parent page
+                    setLanguage?.(newVal);
                     setOpen(false);
                   }}
                 >

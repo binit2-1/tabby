@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { darcula } from "@uiw/codemirror-theme-darcula";
 
@@ -10,12 +10,27 @@ import { cpp } from "@codemirror/lang-cpp";
 import { java } from "@codemirror/lang-java";
 import { rust } from "@codemirror/lang-rust";
 
+interface CodeEditorProps {
+  language?: string;
+  onLanguageChange?: (lang: string) => void;
+}
 
-const CodeEditor = () => {
-  const [language, setLanguage] = useState<string>("javascript");
+const CodeEditor = ({ language: propLanguage, onLanguageChange }: CodeEditorProps) => {
+  const [language, setLanguage] = useState<string>(propLanguage ?? "javascript");
   const [code, setCode] = useState<string>("//Write or paste your code here");
 
-  const getExtension = () => {
+  // sync incoming prop changes
+  useEffect(() => {
+    if (propLanguage && propLanguage !== language) {
+      setLanguage(propLanguage);
+    }
+  }, [propLanguage]);
+
+  useEffect(() => {
+    onLanguageChange?.(language);
+  }, [language, onLanguageChange]);
+
+  const ext = useMemo(() => {
     switch (language) {
       case "javascript":
         return javascript({ jsx: true });
@@ -24,17 +39,17 @@ const CodeEditor = () => {
       case "python":
         return python();
       case "cpp":
+      case "c":
         return cpp();
       case "java":
         return java();
       case "rust":
         return rust();
-      case "c":
-        return cpp();
       default:
-        return []; 
+        return javascript({ jsx: true });
     }
-  };
+  }, [language]);
+
   return (
     <div className="h-full w-full">
         <CodeMirror
@@ -42,7 +57,7 @@ const CodeEditor = () => {
           width="100%"
           height="100%"
           theme={darcula}
-          extensions={[javascript({ jsx: true })]} 
+          extensions={[ext]}
           onChange={(value) => setCode(value)}
           className="h-full w-full text-base"
         />
