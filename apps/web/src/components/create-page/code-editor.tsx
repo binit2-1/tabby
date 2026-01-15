@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { darcula } from "@uiw/codemirror-theme-darcula";
 
@@ -11,31 +11,12 @@ import { java } from "@codemirror/lang-java";
 import { rust } from "@codemirror/lang-rust";
 
 interface CodeEditorProps {
-  language?: string;
-  onLanguageChange?: (lang: string) => void;
+  language: string;
+  code: string;
+  onCodeChange: (code: string) => void;
 }
 
-const CodeEditor = ({ language: propLanguage, onLanguageChange }: CodeEditorProps) => {
-  const [language, setLanguage] = useState<string>(propLanguage ?? "javascript");
-  const [code, setCode] = useState<string>(`Write or paste your ${language} code here...`);
-
-  // sync incoming prop changes
-  useEffect(() => {
-    if (propLanguage && propLanguage !== language) {
-      setLanguage(propLanguage);
-    }
-  }, [propLanguage]);
-
-  useEffect(() => {
-    setCode(language === "python"
-      ? `# Write or paste your Python code here...` 
-      : `// Write or paste your ${language} code here...`
-    )}, [language]);
-
-  useEffect(() => {
-    onLanguageChange?.(language);
-  }, [language, onLanguageChange]);
-
+const CodeEditor = ({ language, code, onCodeChange }: CodeEditorProps) => {
   const ext = useMemo(() => {
     switch (language) {
       case "javascript":
@@ -58,17 +39,17 @@ const CodeEditor = ({ language: propLanguage, onLanguageChange }: CodeEditorProp
 
   return (
     <div className="h-full w-full">
-        <CodeMirror
-          value={code}
-          width="100%"
-          height="100%"
-          theme={darcula}
-          extensions={[ext]}
-          onChange={(value) => setCode(value)}
-          className="h-full w-full text-base"
-        />
+      <CodeMirror
+        value={code}
+        width="100%"
+        height="100%"
+        theme={darcula}
+        extensions={[ext]}
+        onChange={(value) => onCodeChange(value)}
+        className="h-full w-full text-base"
+      />
     </div>
-  )
+  );
 };
 
 export default CodeEditor;

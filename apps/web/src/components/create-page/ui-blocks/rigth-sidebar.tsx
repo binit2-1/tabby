@@ -37,13 +37,12 @@ const frameworks: Framework[] = [
 export type FrameworkValue = (typeof frameworks)[number]["value"];
 
 interface RightSideBarProps {
-  language?: FrameworkValue;
-  setLanguage?: React.Dispatch<React.SetStateAction<FrameworkValue | "">>;
+  language?: string;
+  setLanguage?: (lang: string) => void;
 }
 
 export function RightSideBar({ language, setLanguage }: RightSideBarProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<FrameworkValue | "">(language ?? "");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -53,10 +52,11 @@ export function RightSideBar({ language, setLanguage }: RightSideBarProps) {
           role="combobox"
           aria-expanded={open}
           className="w-44 justify-between"
+          disabled={!language}
         >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Language"}
+          {language
+            ? frameworks.find((framework) => framework.value === language)?.label
+            : "Select snippet first"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -71,10 +71,7 @@ export function RightSideBar({ language, setLanguage }: RightSideBarProps) {
                   key={framework.value}
                   value={framework.value}
                   onSelect={(currentValue) => {
-                    const newVal = currentValue === value ? "" : (currentValue as FrameworkValue);
-                    setValue(newVal);
-                    // notify parent page
-                    setLanguage?.(newVal);
+                    setLanguage?.(currentValue);
                     setOpen(false);
                   }}
                 >
@@ -82,7 +79,7 @@ export function RightSideBar({ language, setLanguage }: RightSideBarProps) {
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      language === framework.value ? "opacity-100" : "opacity-0", language === framework.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

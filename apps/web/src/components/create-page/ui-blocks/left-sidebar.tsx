@@ -12,37 +12,49 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect } from "react";
-import { PencilSimple, Plus, XCircle, CheckCircle } from "@phosphor-icons/react";
+import { useState } from "react";
+import { PlusIcon, XCircleIcon, CheckCircleIcon } from "@phosphor-icons/react";
 
-type CodeInfo = {
+export type CodeInfo = {
+  id: string;
   title: string;
   description: string;
+  code: string;
+  language: string;
+};
+
+interface LeftSideBarProps {
+  items: CodeInfo[];
+  activeId: string | null;
+  onAdd: (title: string, description: string) => void;
+  onRemove: (id: string) => void;
+  onSelect: (id: string) => void;
 }
 
-export default function LeftSideBar() {
+export default function LeftSideBar({
+  items,
+  activeId,
+  onAdd,
+  onRemove,
+  onSelect,
+}: LeftSideBarProps) {
   const [codeName, setCodeName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [items, setItems] = useState<CodeInfo[]>([]);
 
-  
-  const handleSubmit = () =>{
-    if(!codeName.trim()) return;
-    setItems((prev) => [...prev, {title: codeName, description: description}]);
+  const handleSubmit = () => {
+    if (!codeName.trim() || !description.trim()) return;
+    onAdd(codeName.trim(), description.trim());
     setCodeName("");
     setDescription("");
-  }
+  };
 
-  const handleCross = (idx: number) => {
-    setItems((prev) => prev.filter((_, i) => i !== idx));
-  }
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <Dialog>
         <form>
           <DialogTrigger asChild>
             <Button variant="outline">
-              Add <Plus size={16} color="#FF5800" weight="bold" />
+              Add <PlusIcon size={16} color="#FF5800" weight="bold" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-106.25">
@@ -80,27 +92,36 @@ export default function LeftSideBar() {
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
               <DialogClose asChild>
-              <Button type="submit" onClick={handleSubmit} disabled={!codeName.trim() || !description.trim()}>Save changes</Button>
+                <Button
+                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={!codeName.trim() || !description.trim()}
+                >
+                  Save changes
+                </Button>
               </DialogClose>
             </DialogFooter>
           </DialogContent>
         </form>
       </Dialog>
-      <div className="w-full flex-1 mt-5 border-t-2 border-[#1f1f1f]"/>
-      <div className="flex flex-col items-center w-full h-full">
+      <div className="w-full flex-1 mt-5 border-t-2 border-[#1f1f1f]" />
+      <div className="flex flex-col items-center w-full h-full overflow-auto">
         {items.length === 0 ? (
           <p className="flex w-full justify-center text-center font-plus-jakarta-sans mt-4 text-gray-300 px-2">
-            Press Add to add code snippets 
+            Press Add to add code snippets
           </p>
         ) : (
-          items.map((item, idx) => (
+          items.map((item) => (
             <div
-              key={idx}
-              className="flex justify-between w-full font-plus-jakarta-sans font-bold px-2 py-2 border-b-2 border-[#1f1f1f] items-center"
+              key={item.id}
+              onClick={() => onSelect(item.id)}
+              className={`flex justify-between w-full font-plus-jakarta-sans font-bold px-2 py-2 border-b-2 border-[#1f1f1f] items-center cursor-pointer ${
+                activeId === item.id ? "bg-[#2a2a2a]" : "hover:bg-[#1a1a1a]"
+              }`}
             >
               <div className="flex-1 min-w-0">
                 <div
-                  className="text-sm font-medium leading-5 wrap-break-word"
+                  className="text-sm font-medium leading-5 break-words"
                   style={{
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
@@ -113,9 +134,16 @@ export default function LeftSideBar() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 ml-3 cursor-pointer">
-                <CheckCircle size={24} color="#26a269"/>
-                <XCircle size={24} color="#e01b24" onClick={() => handleCross(idx)}/>
+              <div className="flex items-center justify-end gap-2 ml-3">
+                <CheckCircleIcon size={24} color="#26a269" />
+                <XCircleIcon
+                  size={24}
+                  color="#e01b24"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove(item.id);
+                  }}
+                />
               </div>
             </div>
           ))
