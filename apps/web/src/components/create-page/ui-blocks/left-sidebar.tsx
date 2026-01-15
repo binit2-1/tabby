@@ -107,7 +107,7 @@ export default function LeftSideBar({
       <div className="w-full flex-1 mt-5 border-t-2 border-[#1f1f1f]" />
       <div className="flex flex-col items-center w-full h-full overflow-auto">
         {items.length === 0 ? (
-          <p className="flex w-full justify-center text-center font-plus-jakarta-sans mt-4 text-gray-300 px-2">
+          <p className="flex w-full justify-center text-white text-center font-plus-jakarta-sans mt-4 px-2">
             Press Add to add code snippets
           </p>
         ) : (
@@ -121,7 +121,7 @@ export default function LeftSideBar({
             >
               <div className="flex-1 min-w-0">
                 <div
-                  className="text-sm font-medium leading-5 break-words"
+                  className="text-sm font-medium leading-5 wrap-break-word"
                   style={{
                     display: "-webkit-box",
                     WebkitLineClamp: 2,

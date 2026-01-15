@@ -68,7 +68,7 @@ const Page = () => {
                 onCodeChange={handleCodeChange}
               />
             ) : (
-              <div className="text-gray-400 text-center px-4">
+              <div className="text-white font-plus-jakarta-sans font-medium text-center px-4">
                 Add a code snippet from the left sidebar to get started
               </div>
             )}
