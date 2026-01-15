@@ -17,7 +17,7 @@ interface CodeEditorProps {
 
 const CodeEditor = ({ language: propLanguage, onLanguageChange }: CodeEditorProps) => {
   const [language, setLanguage] = useState<string>(propLanguage ?? "javascript");
-  const [code, setCode] = useState<string>("//Write or paste your code here");
+  const [code, setCode] = useState<string>(`Write or paste your ${language} code here...`);
 
   // sync incoming prop changes
   useEffect(() => {
@@ -25,6 +25,12 @@ const CodeEditor = ({ language: propLanguage, onLanguageChange }: CodeEditorProp
       setLanguage(propLanguage);
     }
   }, [propLanguage]);
+
+  useEffect(() => {
+    setCode(language === "python"
+      ? `# Write or paste your Python code here...` 
+      : `// Write or paste your ${language} code here...`
+    )}, [language]);
 
   useEffect(() => {
     onLanguageChange?.(language);
