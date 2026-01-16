@@ -2,16 +2,14 @@ import { Redis } from "ioredis";
 
 const client = new Redis(process.env.REDIS_URL || "redis://localhost:6379");
 
-const generatedId = () => {
-  Math.random().toString(36).substring(2, 9);
-};
+const generatedId = () => Math.random().toString(36).substring(2, 9);
 
 export const addToBundle = async (
   bundleId: string,
   code: string,
-  ttlsec: number
+  ttlsec: number,
 ) => {
-  const snippetId = `snippet"${generatedId()}`;
+  const snippetId = `snippet:${generatedId()}`;
   const bundleKey = `bundle:${bundleId}`;
 
   await client.set(snippetId, code, "EX", ttlsec);
@@ -23,23 +21,19 @@ export const addToBundle = async (
   return snippetId;
 };
 
+export const getBundle = async (bundleId: string) => {
+  const bundleKey = `bundle:${bundleId}`;
 
-export const getBundle = async(bundleId:string)=>{
-    const bundleKey = `bundle:${bundleId}`;
+  const snippetIds = await client.lrange(bundleKey, 0, -1);
 
-    const snippetIds = await client.lrange(bundleKey, 0, -1);
+  if (snippetIds.length === 0) {
+    return null;
+  }
 
-    if(snippetIds.length === 0){
-        return null;
-    }
+  const snippets = await client.mget(snippetIds);
 
-    const snippets = await client.mget(snippetIds);
-
-    const parsedData = snippets.map((snippet) => {
-        if(snippet){
-            JSON.parse(snippet)
-        }
-    })
-    return parsedData;
-
-}
+  const parsedData = snippets
+    .filter((snippet) => snippet !== null)
+    .map((snippet) => JSON.parse(snippet as string));
+  return parsedData;
+};

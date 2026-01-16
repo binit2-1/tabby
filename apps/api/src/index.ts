@@ -1,6 +1,7 @@
-import express from 'express';
+import express, { Router } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import router from './routes/snippetRoutes.ts';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -18,6 +19,7 @@ app.use(cors({
 app.use(express.json());
 
 //Routes
+app.use("/api", router)
 
 
 app.listen(PORT, () => {
