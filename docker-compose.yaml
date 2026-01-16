@@ -1,7 +1,7 @@
 services:
   redis:
     image: redis:alpine
-    container_name: redis
+    container_name: redis-tabby
     ports:
       - "6379:6379"
     volumes:
@@ -11,7 +11,7 @@ services:
 
   redisinsight:
     image: redis/redisinsight:latest
-    container_name: redis-ui
+    container_name: redis-ui-tabby
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
