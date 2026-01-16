@@ -16,6 +16,7 @@ const Page = () => {
   const [items, setItems] = useState<CodeInfo[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [bundleId, setBundleId] = useState<string>("");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const activeItem = items.find((item) => item.id === activeId);
 
@@ -27,7 +28,35 @@ const Page = () => {
     }
     setBundleId(storedId);
     console.log("Session Bundle ID:", storedId);
+    const savedItems = localStorage.getItem("draft-items");
+    const savedActiveId = localStorage.getItem("draft-active-id");
+
+    if (savedItems) {
+      try {
+        setItems(JSON.parse(savedItems));
+      } catch (e) {
+        console.error("Failed to parse saved items", e);
+      }
+    }
+
+    if (savedActiveId) {
+      setActiveId(savedActiveId);
+    }
+
+    setIsLoaded(true);
   }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("draft-items", JSON.stringify(items));
+      
+      if (activeId) {
+        localStorage.setItem("draft-active-id", activeId);
+      } else {
+        localStorage.removeItem("draft-active-id");
+      }
+    }
+  }, [items, activeId, isLoaded]);
 
   const handleAdd = useCallback((title: string, description: string) => {
     const id = crypto.randomUUID();
@@ -42,39 +71,46 @@ const Page = () => {
     setActiveId(id);
   }, []);
 
-  const handleSaveToRedis = useCallback(async (id: string) => {
-    const snippetToSave = items.find((item) => item.id === id);
+  const handleSaveToRedis = useCallback(
+    async (id: string) => {
+      const snippetToSave = items.find((item) => item.id === id);
 
-    if (!snippetToSave) {
-      console.error("Snippet not found");
-      return;
-    }
+      if (!snippetToSave) {
+        console.error("Snippet not found");
+        return;
+      }
 
-    try {
-      const res = await fetch("http://localhost:4000/api/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: snippetToSave.code,
-          language: snippetToSave.language,
-          bundleId: bundleId,
-        }),
-      });
-      if(res.ok){
-        alert(`Snippet "${snippetToSave.title}" saved successfully! ✅`);
-      } else {
-        alert("Failed to save snippet ❌");
-        console.error(await res.json());
+      try {
+        const res = await fetch("http://localhost:4000/api/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: snippetToSave.code,
+            language: snippetToSave.language,
+            bundleId: bundleId,
+          }),
+        });
+        if (res.ok) {
+          alert(`Snippet "${snippetToSave.title}" saved successfully! ✅`);
+          setItems((prev) => prev.filter((item) => item.id !== id));
+          setActiveId((prevActiveId) =>
+            prevActiveId === id ? null : prevActiveId,
+          );
+        } else {
+          alert("Failed to save snippet ❌");
+          console.error(await res.json());
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        } else {
+          console.error("Network error:", error);
+          alert("Error connecting to backend (Is Docker/API running?)");
+        }
       }
-    } catch (error) {
-      if(error instanceof Error){
-        console.error(error.message)
-      } else {
-        console.error("Network error:", error);
-        alert("Error connecting to backend (Is Docker/API running?)");
-      }
-    }
-  }, [items, bundleId]);
+    },
+    [items, bundleId],
+  );
 
   const handleRemove = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
