@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { PlusIcon, XCircleIcon, CheckCircleIcon } from "@phosphor-icons/react";
+import { PlusIcon, XIcon, CheckIcon } from "@phosphor-icons/react";
 
 export type CodeInfo = {
   id: string;
@@ -29,6 +29,7 @@ interface LeftSideBarProps {
   onAdd: (title: string, description: string) => void;
   onRemove: (id: string) => void;
   onSelect: (id: string) => void;
+  onSave: (id:string) => void;
 }
 
 export default function LeftSideBar({
@@ -37,6 +38,7 @@ export default function LeftSideBar({
   onAdd,
   onRemove,
   onSelect,
+  onSave
 }: LeftSideBarProps) {
   const [codeName, setCodeName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -135,10 +137,16 @@ export default function LeftSideBar({
               </div>
 
               <div className="flex items-center justify-end gap-2 ml-3">
-                <CheckCircleIcon size={24} color="#26a269" />
-                <XCircleIcon
-                  size={24}
-                  color="#e01b24"
+                <CheckIcon 
+                  size={16} 
+                  color="white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSave(item.id);
+                  }} />
+                <XIcon
+                  size={16}
+                  color="white"
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemove(item.id);

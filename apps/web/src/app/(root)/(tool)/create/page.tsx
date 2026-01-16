@@ -1,8 +1,10 @@
 "use client";
 import CodeEditor from "@/components/create-page/code-editor";
 import { RightSideBar } from "@/components/create-page/ui-blocks/rigth-sidebar";
-import LeftSideBar, { CodeInfo } from "@/components/create-page/ui-blocks/left-sidebar";
-import { useState, useCallback } from "react";
+import LeftSideBar, {
+  CodeInfo,
+} from "@/components/create-page/ui-blocks/left-sidebar";
+import { useState, useCallback, useEffect } from "react";
 
 const getDefaultCode = (lang: string) => {
   return lang === "python"
@@ -13,8 +15,19 @@ const getDefaultCode = (lang: string) => {
 const Page = () => {
   const [items, setItems] = useState<CodeInfo[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [bundleId, setBundleId] = useState<string>("");
 
   const activeItem = items.find((item) => item.id === activeId);
+
+  useEffect(() => {
+    let storedId = localStorage.getItem("snippet-bundle-id");
+    if (!storedId) {
+      storedId = crypto.randomUUID();
+      localStorage.setItem("snippet-bundle-id", storedId);
+    }
+    setBundleId(storedId);
+    console.log("Session Bundle ID:", storedId);
+  }, []);
 
   const handleAdd = useCallback((title: string, description: string) => {
     const id = crypto.randomUUID();
@@ -29,6 +42,40 @@ const Page = () => {
     setActiveId(id);
   }, []);
 
+  const handleSaveToRedis = useCallback(async (id: string) => {
+    const snippetToSave = items.find((item) => item.id === id);
+
+    if (!snippetToSave) {
+      console.error("Snippet not found");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:4000/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: snippetToSave.code,
+          language: snippetToSave.language,
+          bundleId: bundleId,
+        }),
+      });
+      if(res.ok){
+        alert(`Snippet "${snippetToSave.title}" saved successfully! ✅`);
+      } else {
+        alert("Failed to save snippet ❌");
+        console.error(await res.json());
+      }
+    } catch (error) {
+      if(error instanceof Error){
+        console.error(error.message)
+      } else {
+        console.error("Network error:", error);
+        alert("Error connecting to backend (Is Docker/API running?)");
+      }
+    }
+  }, [items, bundleId]);
+
   const handleRemove = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
     setActiveId((prevActiveId) => (prevActiveId === id ? null : prevActiveId));
@@ -38,23 +85,29 @@ const Page = () => {
     setActiveId(id);
   }, []);
 
-  const handleCodeChange = useCallback((code: string) => {
-    if (!activeId) return;
-    setItems((prev) =>
-      prev.map((item) => (item.id === activeId ? { ...item, code } : item))
-    );
-  }, [activeId]);
+  const handleCodeChange = useCallback(
+    (code: string) => {
+      if (!activeId) return;
+      setItems((prev) =>
+        prev.map((item) => (item.id === activeId ? { ...item, code } : item)),
+      );
+    },
+    [activeId],
+  );
 
-  const handleLanguageChange = useCallback((lang: string) => {
-    if (!activeId) return;
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === activeId
-          ? { ...item, language: lang, code: getDefaultCode(lang) }
-          : item
-      )
-    );
-  }, [activeId]);
+  const handleLanguageChange = useCallback(
+    (lang: string) => {
+      if (!activeId) return;
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === activeId
+            ? { ...item, language: lang, code: getDefaultCode(lang) }
+            : item,
+        ),
+      );
+    },
+    [activeId],
+  );
 
   return (
     <div className="flex h-screen w-full justify-center items-center relative">
@@ -83,6 +136,7 @@ const Page = () => {
           onAdd={handleAdd}
           onRemove={handleRemove}
           onSelect={handleSelect}
+          onSave={handleSaveToRedis}
         />
       </div>
       {/* Right sidebar */}
