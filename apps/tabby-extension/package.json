@@ -1,11 +1,16 @@
 {
-  "name": "tabby",
-  "displayName": "Tabby",
+  "name": "tabby-clipboard",
+  "displayName": "Tabby Cloud clipboard",
   "description": "Sync code snippets from web",
   "version": "0.0.1",
   "publisher": "binit-dev",
   "engines": {
     "vscode": "^1.80.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/binit2-1/tabby.git",
+    "directory": "apps/tabby-extension"
   },
   "categories": ["Other"],
   "activationEvents": [
