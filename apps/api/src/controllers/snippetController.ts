@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import * as redisServices from "../services/redisServices.ts";
+import * as redisServices from "../services/redisServices";
 
 export const saveSnippets = async (req: Request, res: Response) => {
   try {

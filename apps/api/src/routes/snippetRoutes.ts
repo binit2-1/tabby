@@ -1,5 +1,5 @@
 import express from 'express'
-import { saveSnippets, getSnippetBundle } from '../controllers/snippetController.ts'
+import { saveSnippets, getSnippetBundle } from '../controllers/snippetController'
 
 const router: express.Router = express.Router();
 
