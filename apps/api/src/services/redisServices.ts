@@ -15,12 +15,21 @@ export const addToBundle = async (
   const snippetId = `snippet:${generatedId()}`;
   const bundleKey = `bundle:${bundleId}`;
 
-  await client.set(snippetId, code, "EX", ttlsec);
+  const pipeline = client.pipeline();
 
-  await client.rpush(bundleKey, snippetId);
+  pipeline.set(snippetId, code, "EX", ttlsec);
+  pipeline.rpush(bundleKey, snippetId);
+  pipeline.expire(bundleKey, ttlsec);
 
-  await client.expire(bundleKey, ttlsec);
+  await pipeline.exec();
 
+
+  // await client.set(snippetId, code, "EX", ttlsec);
+// 
+  // await client.rpush(bundleKey, snippetId);
+// 
+  // await client.expire(bundleKey, ttlsec);
+// 
   return snippetId;
 };
 

@@ -53,10 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
                 const currentLang = document.languageId;
 
                 // If you want to show ALL snippets regardless of file, remove the .filter()
-                const relevantSnippets = cachedSnippets.filter(s => 
-                    normalizeLang(s.language) === normalizeLang(currentLang)
-                );
-
+                const relevantSnippets = cachedSnippets
                 // Convert JSON data into VS Code "Suggestions"
                 return relevantSnippets.map(snippet => {
                     const item = new vscode.CompletionItem(snippet.title, vscode.CompletionItemKind.Snippet);
@@ -90,7 +87,7 @@ async function fetchSnippets(bundleId: string) {
         const response = await axios.get(`http://localhost:4000/api/bundle/${bundleId}`);
         
         if (response.data && Array.isArray(response.data)) {
-            cachedSnippets = response.data;
+            cachedSnippets = response.data; 
             vscode.window.setStatusBarMessage(`$(check) Tabby: Loaded ${cachedSnippets.length} snippets`, 4000);
         } else {
              vscode.window.showWarningMessage('Tabby: Bundle ID found, but it is empty.');
@@ -98,7 +95,7 @@ async function fetchSnippets(bundleId: string) {
         status.dispose();
     } catch (error) {
         console.error("Tabby Network Error:", error);
-        vscode.window.showErrorMessage('Tabby: Could not connect to API (Is Docker running?)');
+        vscode.window.showErrorMessage('Tabby: Could not connect to API');
     }
 }
 
