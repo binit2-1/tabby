@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Tabby Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        // Tells the host where the extension lives
+        "--extensionDevelopmentPath=${workspaceFolder}/apps/tabby-extension"
+      ],
+      "outFiles": [
+        // Tells the debugger where to find compiled JS
+        "${workspaceFolder}/apps/tabby-extension/out/**/*.js" 
+      ],
+      // Runs the task we created above before launching
+      "preLaunchTask": "npm: watch:extension" 
+    }
+  ]
+}
