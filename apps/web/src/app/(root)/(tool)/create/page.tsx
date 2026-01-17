@@ -86,6 +86,8 @@ const Page = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             code: snippetToSave.code,
+            title: snippetToSave.title,
+            description: snippetToSave.description,
             language: snippetToSave.language,
             bundleId: bundleId,
           }),

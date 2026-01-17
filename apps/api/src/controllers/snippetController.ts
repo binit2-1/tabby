@@ -3,14 +3,16 @@ import * as redisServices from "../services/redisServices.ts";
 
 export const saveSnippets = async (req: Request, res: Response) => {
   try {
-    const { code, language, bundleId } = req.body;
+    const { code, title, description, language, bundleId } = req.body;
 
-    if (!code || !bundleId) {
-      return res.status(400).json({ error: "Code and BundleID are required" });
+    if (!code || !bundleId || !title || !description || !language) {
+      return res.status(400).json({ error: "Code, Title, Description, Language, and BundleID are required" });
     }
 
     const snippetData = JSON.stringify({
       code,
+      title: title || "Untitled",
+      description: description || "",
       language,
       createdAt: new Date(),
     });
