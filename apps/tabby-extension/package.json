@@ -4,6 +4,7 @@
   "description": "Sync code snippets from web",
   "version": "0.0.1",
   "publisher": "binit-dev",
+  "icon": "./public/vscode-ext.png",
   "engines": {
     "vscode": "^1.80.0"
   },
