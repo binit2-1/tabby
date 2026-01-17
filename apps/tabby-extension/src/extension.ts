@@ -9,7 +9,7 @@ interface Snippet {
     language: string;    
 }
 
-// Base Url
+// Base Url(production)
 const BASE_URL = 'https://tabby-backend.vercel.app';
 //development
 // const BASE_URL = 'http://localhost:4000';
