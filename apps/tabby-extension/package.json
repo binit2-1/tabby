@@ -2,7 +2,7 @@
   "name": "tabby-clipboard",
   "displayName": "Tabby Cloud clipboard",
   "description": "Sync code snippets from web",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "binit-dev",
   "icon": "images/vscode-ext.png",
   "engines": {
