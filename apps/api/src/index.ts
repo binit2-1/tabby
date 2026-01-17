@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import helmet from 'helmet';
+import * as helmet from 'helmet';
 import cors from 'cors';
 import router from './routes/snippetRoutes.ts';
 
@@ -7,7 +7,7 @@ const app:express.Application = express();
 const PORT = process.env.PORT || 4000;
 
 //Middleware
-app.use(helmet());
+app.use(helmet.default());
 
 //cors
 app.use(cors({
