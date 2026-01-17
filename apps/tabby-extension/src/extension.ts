@@ -3,13 +3,18 @@ import axios from 'axios';
 
 interface Snippet {
     id: string;
-    title: string;       // This is the Trigger Word
-    code: string;        // The actual code block
-    description: string; // Shown in the detail menu
-    language: string;    // e.g., "javascript", "python"
+    title: string;       
+    code: string;        
+    description: string; 
+    language: string;    
 }
 
-// 2. The "Offline Cache"
+// Base Url
+const BASE_URL = 'https://tabby-backend.vercel.app';
+//development
+// const BASE_URL = 'http://localhost:4000';
+
+// Offline Cache
 let cachedSnippets: Snippet[] = [];
 let userBundleId: string | undefined;
 
@@ -84,7 +89,7 @@ async function fetchSnippets(bundleId: string) {
         const status = vscode.window.setStatusBarMessage('$(sync~spin) Tabby: Syncing snippets...');
         
         // Fetch from your local API
-        const response = await axios.get(`http://localhost:4000/api/bundle/${bundleId}`);
+        const response = await axios.get(`${BASE_URL}/api/bundle/${bundleId}`);
         
         if (response.data && Array.isArray(response.data)) {
             cachedSnippets = response.data; 
@@ -97,16 +102,6 @@ async function fetchSnippets(bundleId: string) {
         console.error("Tabby Network Error:", error);
         vscode.window.showErrorMessage('Tabby: Could not connect to API');
     }
-}
-
-// --- HELPER: Normalize Language Names ---
-// Handles "js" vs "javascript" vs "javascriptreact" matches
-function normalizeLang(lang: string): string {
-    const l = lang.toLowerCase();
-    if (l === 'js' || l === 'jsx' || l === 'javascriptreact') return 'javascript';
-    if (l === 'ts' || l === 'tsx' || l === 'typescriptreact') return 'typescript';
-    if (l === 'py') return 'python';
-    return l;
 }
 
 export function deactivate() {}
