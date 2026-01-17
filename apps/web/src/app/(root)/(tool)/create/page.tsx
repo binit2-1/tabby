@@ -81,7 +81,7 @@ const Page = () => {
       }
 
       try {
-        const res = await fetch("http://localhost:4000/api/save", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/save`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
