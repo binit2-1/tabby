@@ -1,25 +1,27 @@
-import { RootProvider } from 'fumadocs-ui/provider/next';
+import { RootProvider } from "fumadocs-ui/provider/next";
+import { PostHogProvider } from "./providers";
+import PostHogPageView from "./posthog-pageview";
 import localFont from "next/font/local";
-import './globals.css';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
-import  AnimatedFavicon  from '@/components/animated-favicon';
+import "./globals.css";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import AnimatedFavicon from "@/components/animated-favicon";
 
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ["latin"],
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight:['400','500','600','700','800'],
-  style: ['normal', 'italic'],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
   variable: "--font-plus-jakarta-sans",
-  display: 'swap',
+  display: "swap",
 });
 
 const carity = localFont({
   src: [
     {
-      path:"../../public/fonts/CarityDemo.otf",
+      path: "../../public/fonts/CarityDemo.otf",
       weight: "400",
       style: "normal",
     },
@@ -29,17 +31,25 @@ const carity = localFont({
 });
 
 export const metadata = {
-  title: 'Tabby',
-  description: 'Tabby is a tool which enables you to use code snippets offline, without any internet connection. Perfect for coding on the go!',
+  title: "Tabby",
+  description:
+    "Tabby is a tool which enables you to use code snippets offline, without any internet connection. Perfect for coding on the go!",
 };
 
-export default function Layout({ children }: LayoutProps<'/'>) {
+export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.className} ${carity.variable} ${plusJakartaSans.variable}`} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen" suppressHydrationWarning>
-        <AnimatedFavicon />
-        <RootProvider>{children}</RootProvider>
-      </body>
+    <html
+      lang="en"
+      className={`${inter.className} ${carity.variable} ${plusJakartaSans.variable}`}
+      suppressHydrationWarning
+    >
+      <PostHogProvider>
+        <body className="flex flex-col min-h-screen" suppressHydrationWarning>
+          <AnimatedFavicon />
+          <PostHogPageView />
+          <RootProvider>{children}</RootProvider>
+        </body>
+      </PostHogProvider>
     </html>
   );
 }
