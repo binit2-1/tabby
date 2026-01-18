@@ -32,7 +32,7 @@ interface LeftSideBarProps {
   onSave: (id:string) => void;
 }
 
-export default function LeftSideBar({
+export function LeftSideBar({
   items,
   activeId,
   onAdd,
@@ -160,3 +160,6 @@ export default function LeftSideBar({
     </div>
   );
 }
+
+
+

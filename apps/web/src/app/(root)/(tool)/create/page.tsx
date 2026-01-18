@@ -1,10 +1,13 @@
 "use client";
 import CodeEditor from "@/components/create-page/code-editor";
 import { RightSideBar } from "@/components/create-page/ui-blocks/rigth-sidebar";
-import LeftSideBar, {
+import  {LeftSideBar,
   CodeInfo,
 } from "@/components/create-page/ui-blocks/left-sidebar";
 import { useState, useCallback, useEffect } from "react";
+import Hamburger from '@/components/svg-animations/hamburger'
+import { motion } from 'motion/react';
+
 
 const getDefaultCode = (lang: string) => {
   return lang === "python"
@@ -17,6 +20,7 @@ const Page = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [bundleId, setBundleId] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const activeItem = items.find((item) => item.id === activeId);
 
@@ -149,8 +153,36 @@ const Page = () => {
 
   return (
     <div className="flex h-screen w-full justify-center items-center relative">
-      <div className="flex items-center justify-center h-full w-325 border-l-2 border-r-2 border-[#1f1f1f]">
-        <div className="flex h-full w-225 border-l-2 border-r-2 border-[#1f1f1f]">
+      {/* Hamburger menu - visible below 1300px */}
+      <div
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="fixed left-1 top-28 z-50 p-2 min-[1300px]:hidden"
+        aria-label="Toggle menu"
+      >
+        <Hamburger />
+      </div>
+      <motion.div
+      initial={{ x: -200 }}
+      animate={{ x: menuOpen ? 0 : -200 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed z-40 flex flex-col gap-4 pt-25 items-center min-[1300px]:hidden w-50 h-full bg-black left-0 top-20 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
+        <RightSideBar
+          language={activeItem?.language ?? ""}
+          setLanguage={handleLanguageChange}
+        />
+        <LeftSideBar
+          items={items}
+          activeId={activeId}
+          onAdd={handleAdd}
+          onRemove={handleRemove}
+          onSelect={handleSelect}
+          onSave={handleSaveToRedis}
+        />
+      </motion.div>
+
+      {/* Main content - always visible */}
+      <div className="flex items-center justify-center h-full w-full min-[1300px]:w-325 border-l-0 min-[1300px]:border-l-2 border-r-0 min-[1300px]:border-r-2 border-[#1f1f1f]">
+        <div className="flex h-full w-full min-[1300px]:w-225 border-l-0 min-[1300px]:border-l-2 border-r-0 min-[1300px]:border-r-2 border-[#1f1f1f]">
           <div className="flex flex-1 justify-center items-center mt-26.5 overflow-hidden">
             {activeItem ? (
               <CodeEditor
@@ -166,8 +198,8 @@ const Page = () => {
           </div>
         </div>
       </div>
-      {/* Left sidebar */}
-      <div className="absolute left-[calc(50%-650px)] w-50 top-30 bottom-0 flex items-center justify-center">
+      {/* Left sidebar - hidden below 1300px */}
+      <div className="hidden min-[1300px]:flex absolute left-[calc(50%-650px)] w-50 top-30 bottom-0 items-center justify-center">
         <LeftSideBar
           items={items}
           activeId={activeId}
@@ -177,8 +209,8 @@ const Page = () => {
           onSave={handleSaveToRedis}
         />
       </div>
-      {/* Right sidebar */}
-      <div className="absolute right-[calc(50%-650px)] w-50 top-30 bottom-0 flex justify-center">
+      {/* Right sidebar - hidden below 1300px */}
+      <div className="hidden min-[1300px]:flex absolute right-[calc(50%-650px)] w-50 top-30 bottom-0 justify-center">
         <RightSideBar
           language={activeItem?.language ?? ""}
           setLanguage={handleLanguageChange}
