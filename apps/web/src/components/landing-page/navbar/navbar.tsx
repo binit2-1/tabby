@@ -10,7 +10,7 @@ const Navbar = () => {
   const isDocs = pathname.startsWith('/docs');
   const isCreate = pathname.startsWith('/create');
   return (
-    <div className='fixed top-0 left-0 z-50 w-full h-26.5 flex justify-center items-center bg-background'>
+    <div className='fixed top-0 left-0 z-50 w-full h-26.5 flex justify-center items-center bg-[#0A0A0A]'>
       <div className="flex flex-row absolute h-full top-0 w-full min-[1300px]:w-225 left-1/2 -translate-x-1/2 border-x-0 min-[1300px]:border-x-2 border-[#1f1f1f] items-center px-6 justify-between">
         <Link href="/" className='flex pb-5 -ml-6 items-center h-full'>
           <Logo />

@@ -152,7 +152,7 @@ const Page = () => {
   );
 
   return (
-    <div className="flex h-screen w-full justify-center items-center relative">
+    <div className="flex h-screen w-full justify-center items-center relative bg-[#0A0A0A]">
       {/* Hamburger menu - visible below 1300px */}
       <div
         onClick={() => setMenuOpen(!menuOpen)}
